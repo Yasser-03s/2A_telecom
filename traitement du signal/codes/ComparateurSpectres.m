@@ -37,14 +37,15 @@ function ComparateurSpectres(x, P, Q, variance, fn_singularites, typeFiltre)
     dsp_theorique = variance * (abs(h_i).^2);
 
     %% Périodogramme de Daniell (1 paramètre)
-    M =[11, 51, 151];
+    M =N*[1/200, 1/40, 1/8]+1;          %taille du segment (découpage de dsp)
+    
 
     %% Périodogramme de Bartlett (1 paramètre)
-    L =[500, 200 ,50]; % longueur des segments
+    L =N*[1/4, 1/10 ,1/40];         % longueur des segments (découpage de x)
 
     %% Périodogramme de Welch (2 paramètres)
-    L_welch =[250,100,100]; % longueur des segments
-    R =[125,50,75]; % recouvrement
+    L_welch = N*[1/8,1/20,1/20];    % longueur des segments
+    R = L_welch.* [0.5 0.5 0.75];            % recouvrement 50%, 50%, 75%
 
     %% Corrélogramme (1 paramètre)
     N_retards =[15, 60, 250];
@@ -103,7 +104,7 @@ function ComparateurSpectres(x, P, Q, variance, fn_singularites, typeFiltre)
     %% Plot Bartlett
     figure;
     for i = 1:length(L)
-        fprintf('Essai Bartlet pour L = %d\n', L(i));
+        %fprintf('Essai Bartlet pour L = %d\n', L(i));
         dsp_bartlett= dspbartlett(x,L(i),N);
         fn_bartlett= linspace(-1/2,1/2 - 1/L(i),L(i));
         subplot(length(L),1,i);
@@ -130,3 +131,4 @@ function ComparateurSpectres(x, P, Q, variance, fn_singularites, typeFiltre)
         legend()
     end
 end
+
