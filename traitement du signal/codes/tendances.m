@@ -1,0 +1,52 @@
+function t  = tendances(y, N,methode)
+% TENDANCES  Estime la tendance du signal pour une taille de bloc N
+% Entrees : 
+%   y            : signal déjà centré et integré.
+%   N            : taille des blocs, 3<N< floor(M/2).
+%   methode      : option "1", "2", "3", "4", ou "5";
+%                   1 =  blocs, moyenne.
+%                   2 =  blocs, droite de regression.
+%                   3 =  filtre moyenneur causal (2b).
+%                   4 =  phase nulle strategie 1.
+%                   5 =  phase nulle strategie 2.
+% Sortie  :
+%   t            : tendance estimée (colonne)
+%                  taille L*N pour les methodes 1 et 2, taille M pour 3, 4 
+%                  et 5.
+
+    y = y(:);
+    M = length(y);
+    if N<3 || N > floor(M/2)
+        error('N doit verifier 3<N< floor(M/2)');      
+    end
+    
+    switch methode
+        case 1 % blocs sans recouvrement, tendance = moyenne du bloc
+            L = floor(M/N);
+            Y = reshape(y(1:L*N), N, L);
+            t = repelem(mean(Y, 1), N, 1);
+            t = t(:);
+        case 2 % blocs sans recouvrement, droite de regression
+            L = floor(M/N);
+            Y = reshape(y(1:L*N), N, L);
+            H = [ones(N,1), (0:N-1)'];
+            Theta = (H'*H) \ (H'*Y);
+            T = H * Theta;
+            t= T(:);
+        case 3
+            h = ones(N,1) / N;
+            t = filter(h, 1, y);
+        case 4
+            h = ones(N,1) / N;
+            g = filter(h, 1, y);
+            r = filter(h, 1, flipud(g));
+            t = flipud(r);
+        case 5
+            h = ones(N,1) / N;
+            g = filter(h, 1, y);
+            r = filter(h,1,flipud(y));
+            t = (g + flipud(r))/2;
+        otherwise
+            error('methode doit valoir 1, 2, 3, 4 ou 5');
+    end
+end
