@@ -28,8 +28,8 @@ for i in range(v_size,h-v_size):
             
             for l in range(-v_size,v_size+1):
                 vecteur= img[i,j] - img[i+k,j+l]
-                w_couleur= np.exp(-np.linalg.norm(vecteur)/(sigma_c**2))
-                w_spatiale= np.exp(-np.linalg.norm([k, l])/(sigma_s**2))
+                w_couleur= np.exp(-np.linalg.norm(vecteur)/(2*sigma_c**2))
+                w_spatiale= np.exp(-np.linalg.norm([k, l])/(2*sigma_s**2))
                 
                 sum_w+= w_couleur*w_spatiale
                 sum_wi+= w_couleur*w_spatiale*img[i+k,j+l]

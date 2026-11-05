@@ -31,8 +31,9 @@ def segment(img):
     
     plt.figure()
     plt.imshow(result)
-    plt.title("resultat etiquettage")
+    plt.title("Resultat etiquettage")
     
 plt.figure()
 plt.imshow(mocap)
+plt.title('Originale')
 segment(mocap)
