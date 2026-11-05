@@ -6,6 +6,7 @@ import time; start_time = time.time()
 
 
 barbara= plt.imread('./img/barbara_awgn_noise.png').astype('double')
+temple= plt.imread('./img/temple.png')
 face= plt.imread('./img/face.png')
 
 # crop:
@@ -36,16 +37,18 @@ def filtrage_bilateral(img):
             img_bf[i,j]= np.sum(poids[:,:, np.newaxis]*fenetre, axis= (0,1))/np.sum(poids)
     plt.figure()
     plt.subplot(1,2,1)
-    plt.title('crop')
+    plt.title('original')
     plt.imshow(img)
     plt.subplot(1,2,2)
     plt.imshow(img_bf)
-    plt.title('filtred crop')
+    plt.title('filtred')
 
 
         #...
 
 filtrage_bilateral(face)
+#filtrage_bilateral(barbara)
+# filtrage_bilateral(temple)
 print(f"Finished in {time.time() - start_time:.2f} seconds")
 
 
