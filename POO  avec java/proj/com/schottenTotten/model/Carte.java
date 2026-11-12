@@ -1,5 +1,3 @@
-public class Carte{
-    private int valeur
-    private String couleur
-    public Carte()
+package com.schottenTotten.model;
+public abstract class Carte {
 }

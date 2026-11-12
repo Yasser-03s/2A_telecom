@@ -1,0 +1,8 @@
+pour compiler tout les fichier.java
+javac com/library/*/*.java
+
+
+executer main par 
+java com.library.main.LibraryApp
+
+!!!compile and run from the root source directory (src) so it can read the entire package path.
