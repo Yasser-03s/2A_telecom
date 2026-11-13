@@ -23,7 +23,9 @@ public class Combinaison implements Comparable<Combinaison> {
         this.somme = somme;
     }
 
-    public Type getType() { return type; }
+    public Type getType(){ 
+        return type; 
+        }
     public int getSomme() { return somme; }
 
     public static Combinaison evaluer(List<CarteClan> cartes) {

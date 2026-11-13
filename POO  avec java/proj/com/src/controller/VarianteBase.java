@@ -106,7 +106,7 @@ public class VarianteBase extends Jeu {
      * Si l'adversaire n'a pas posé ses 3 cartes, il faut prouver qu'il ne pourra pas nous battre,
      * quelles que soient les cartes qui ne sont pas encore posées sur le terrain.
      */
-    private boolean revendicationValide(Borne borne, int cote) {
+    public boolean revendicationValide(Borne borne, int cote) {
         if (borne.getGagnant() != 0 || !borne.estComplete(cote)) {
             return false;
         }
