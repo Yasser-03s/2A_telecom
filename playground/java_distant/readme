@@ -1,0 +1,6 @@
+Pour lancer une partie à deux machines :
+1. Sur la machine hôte, compile si nécessaire puis lance :
+
+java -cp build com.schottenTotten.Main --serve 5000
+
+2. Sur la machine du deuxième joueur, lance :

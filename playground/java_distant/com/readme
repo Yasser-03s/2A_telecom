@@ -1,0 +1,16 @@
+pour compiler pour la première fois:
+
+javac --release 17 -d build $(find com -name "*.java")
+
+
+
+pour executer sur la machine locale 2 modes: 
+mode locale:
+java -cp build com.schottenTotten.Main 
+mode connecté:
+java -cp build com.schottenTotten.Main --serve 5000 
+
+sur machine distante (joueur 2):
+ssh -t utilisateur@IP_HOTE "nc 127.0.0.1 5000"
+(avec utilisateur de ent du joueur1 et nom_machine2@pedago.ipb.fr
+(exemple: ssh yzakri@charleston.pedago.ipb.fr)
