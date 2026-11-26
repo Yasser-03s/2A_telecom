@@ -1,0 +1,12 @@
+environnement python:
+
+1)
+python -m venv myenv (creer un environnement virtuel localement appelé "myenv")
+2)
+.\myenv\Scripts\activate.bat
+3)
+pip install numpy pillow 
+pip install matplotlib
+4)
+gitignore env
+(le prof utilise uv pour avoir un env parametré et git initialisé tout prêt...)

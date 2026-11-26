@@ -36,6 +36,9 @@ def non_supervised(img)    :
     h,w =  img.shape[:2];
     randrange( )
     randrange( )
-    hist
+    n, intensity = np.histogram(img.ravel(), bins=256, range=(0, 256))
+    bin_centers = intensity[:-1]
+    plt.figure()
+    plt.bar(bin_centers, n, width=1.0, color='gray', edgecolor='none')
 
 #idée est de generer des segments aleatoire jusque avoir un qui traverse le code diagonalement cad rentre en pixel noir et sort du pixel noir
