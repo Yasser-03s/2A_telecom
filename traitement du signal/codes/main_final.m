@@ -1,3 +1,4 @@
+clear; close all; clc;
 %% Paramètres signal d'entrée (BBGC)
 N = 2000;
 moyenne = 0;

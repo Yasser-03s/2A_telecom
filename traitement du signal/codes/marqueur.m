@@ -1,40 +1,31 @@
-function [pente, Ns, P, p]= marqueur(x, methode, integration)
-% MARQUEUR centre (et integre) le signal x, puis calcule la tendance (dans 
-% une boucle), la retranche et calcule P(N) et trace à la fin le log-log, 
-% fait la régression et renvoie la pente.
-% Entrées :
-%   x            : signal brut.
-%   methode      :  option "1", "2", "3", "4", ou "5";
-%                   1 =  blocs, moyenne.
-%                   2 =  blocs, droite de regression.
-%                   3 =  filtre moyenneur causal (2b).
-%                   4 =  phase nulle strategie 1.
-%                   5 =  phase nulle strategie 2.
-%   integration  : "1" pour integration, "0" sinon.
-% Sortie  :
-%   pente        : pente de la courbe log-log obtenue par regression.
+function [alpha, beta, Nvals, P] = marqueur(y, methode, Nvals)
+% MARQUEUR Calcule P(N) pour plusieurs Ã©chelles N, puis la droite de
+% rÃ©gression de ln P(N) en fonction de ln N. Sa pente alpha est le
+% marqueur.
+%
+% EntrÃ©es :
+%   y       : signal intÃ©grÃ© (ou centrÃ© seulement, selon l'Ã©tude).
+%   methode : handle @(y,N) -> [ytilde, idx] (une des fonctions tendance_*).
+%   Nvals   : Ã©chelles N testÃ©es (vecteur d'entiers).
+%
+% Sorties :
+%   alpha, beta : pente et ordonnÃ©e Ã  l'origine de ln P = alpha ln N + beta.
+%   Nvals       : Ã©chelles effectivement utilisÃ©es (celles oÃ¹ P > 0).
+%   P           : puissances rÃ©siduelles P(N) associÃ©es.
 
-    %% étape 1
-    x = x(:) - mean(x);
-    if integration
-        y = cumsum(x); 
-        %cumsum() effectue la somme cumulative du vecteur (l'integration)
-    else 
-        y = x; 
+    P = zeros(size(Nvals));
+    for i = 1:length(Nvals)
+        [ytilde, idx] = methode(y, Nvals(i));
+        P(i) = puissance(y, ytilde, idx);
     end
-    M = length(y);
-    Ns = 3:floor(M/2);
-    P = zeros(size(Ns));
 
-    %% étape 2 et 3
-    for k = 1:length(Ns)
-        t = tendances(y,Ns(k),methode);
-        P(k) = mean((y(1:length(t)) - t)).^2;
-    end
-    %% étape 4
+    valide = P > eps;                       % exclut les ajustements exacts
+    Nvals  = Nvals(valide);                 % (rÃ©sidu nul, ln(0) impossible)
+    P      = P(valide);
 
-    p = polyfit(log(Ns),log(P),1);
-    pente = p(1);  
-    %polyfit  renvoie les coefficients deun polynôme p(x) de degré n qui 
-    %est le meilleur ajustement (au sens des moindres carrés) pour les données de y
+    u = log(Nvals(:));                      % abscisses ln N
+    v = log(P(:));                          % ordonnÃ©es ln P(N)
+    coef  = polyfit(u, v, 1);               % moindres carrÃ©s, p = 1
+    alpha = coef(1);
+    beta  = coef(2);
 end
