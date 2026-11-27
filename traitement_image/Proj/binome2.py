@@ -66,7 +66,7 @@ def lecture(img, rayons= [rayon_manuel(img)]):
         # 4. Calcul du critère crit(k)
         crit = w * (mu_total - mu)**2 + (1 - w) * (mu**2)
         seuil_otsu = np.argmax(crit)
-        profil_binaire = (pixels_qr <= seuil_otsu).astype(int)
+        profil_binaire = (pixels_qr > seuil_otsu).astype(int)
         
         plt.figure(figsize=(12, 3))
         plt.plot(profil_binaire)
@@ -76,7 +76,7 @@ def lecture(img, rayons= [rayon_manuel(img)]):
         print('seuil de Otsu= '+ str(seuil_otsu))
         print('taille du profil= '+str(len(profil_binaire)))
         nb_barres = np.sum(np.diff(profil_binaire) == 1) + profil_binaire[0]
-        print(nb_barres)
+        print('nombre de barres= '+ str(nb_barres))
         
         # visualsation --------------------
         # rayonne= img.copy()
@@ -92,16 +92,16 @@ def lecture(img, rayons= [rayon_manuel(img)]):
         debut= indices_noires[0]
         fin= indices_noires[-1]
         largeur= fin -debut +1
-        u= largeur/95
+        u= int(np.round(largeur/95))
         print('largeur du code= '+str(largeur))
         print('u= '+ str(u))
         
     
-    return 1   
+    return profil_binaire   
     
 
     
 
-lecture(bw)
+profil= lecture(bw)
 
 print(f"Finished in {time.time() - start_time:.2f} seconds")
