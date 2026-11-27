@@ -29,10 +29,10 @@ def linreg2D(data,titre):
     plt.show()
     
     erreur_apprentissage= (1/len(y))*sum((y_pred-y)**2)
-    print("erreur d'apprentissage" + titre +": "+ str(erreur_apprentissage))
+    print("erreur d'apprentissage OLS" + titre +": "+ str(erreur_apprentissage))
     
-linreg2D(data1, 'data1')
-linreg2D(data2, 'data2')
+# linreg2D(data1, 'data1')
+# linreg2D(data2, 'data2')
 
 ## ----------------------- version OLM implémenté---------------------------
 # #extraction des colonnes de data1
@@ -60,9 +60,69 @@ linreg2D(data2, 'data2')
 ## ---------------------------------------------------------------------------
 
 
-def regression(data, phi, beta):
+def phi(x,q):
+    return np.array([[x[k]**j for j in range(q+1)] for k in range(len(x)) ])
+
+# nu=[]
+# sigma=[]
+
+# def phi2(x,i):
+#     return (1+np.exp(-(x-nu[i])/sigma[i]))**-1
+
+def trier(x, y_pred):
+    idx = np.argsort(x)          # indices qui trient x par ordre croissant
+    return x[idx], y_pred[idx]   # même ordre appliqué aux deux tableaux
+
+def regression(data, phi,q,titre):
+    #entrée: les données et la fonction phi, l'ordre q et le titre de la dataset
+    #sortie: la liste des paramètre beta et affiche la courbe d'apprentissage et l'erreur d'apprentissage
     x= data[0]
     y= data[1]
-    Jbeta= np.linalg.norm( y - phi @ beta)**2
+    
+    X = phi(x,q)
+    print("rang phi: "+str(np.linalg.matrix_rank(X)))
+    if(np.linalg.matrix_rank(X)!=q+1):
+        print("instable, rang(phi) =/= q+1 ("+str(q+1)+")")
+        return 0
+    inverse= np.linalg.inv(X.T @ X)
+    beta = inverse @ X.T @ y 
+    y_pred= X @ beta
+    
+    Jbeta = np.linalg.norm(y - y_pred)**2
+    n = len(y)  # nb de lignes
+    erreur= Jbeta/n
+    print("erreur d'apprentissage de l'espace de redescription de " + titre + " d'ordre "+str(q)+": "+ str(erreur))
     
     
+    plt.figure()
+    plt.scatter(x,y) #plt.scatter pout nuage de points
+    plt.scatter(x, y_pred, color='yellow',label= "scatter régression d'ordre "+str(q))
+    #------------------- On ajoute une étape pour trier x et y_pred, sinon on a des zigzag--------------------------
+    x_trie, y_pred_trie = trier(x, y_pred)
+    plt.plot(x_trie, y_pred_trie, color='yellow', label="courbe régression d'ordre " + str(q))
+    #---------------------------------------------------------------------------------------------------------------
+    plt.title("nuage de points de "+titre)
+    plt.xlabel('x')
+    plt.ylabel('y')
+    plt.legend()
+    plt.show()
+    
+    
+    
+    return beta
+
+# regression(data2, phi,2,"data2")
+# regression(data3, phi,1,"data3")
+# regression(data3, phi,2,"data3")
+# regression(data3, phi,3,"data3")
+# regression(data3, phi,5,"data3")
+# regression(data3, phi,10,"data3")
+# regression(data3, phi,15,"data3")
+
+
+def ridgereg(data, titre):
+    x=data[0]
+    y=data[1]
+    p=len(y)
+    X=np.column_stack((np.ones_like(x), x))
+    p= np.linalg.matrix_rank(X)
